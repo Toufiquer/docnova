@@ -44,11 +44,11 @@ export const defaultDataSection12: Section12Data = {
   sectionUid: "section-uid-12",
   paddingX: 0,
   paddingY: 0,
-  badge: "NexaMart · NxMart",
+  badge: "Docnova · NxMart",
   showEyebrow: true,
   title: "Online shopping",
   subTitle: "Across Bangladesh",
-  description: "NexaMart is an online shopping platform in Bangladesh.",
+  description: "Docnova is an online shopping platform in Bangladesh.",
   partners: [],
   collabOptions: [],
 };

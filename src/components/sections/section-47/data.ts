@@ -35,10 +35,10 @@ export const defaultLayout = {
 
 export const defaultDataSection47: Section47Data = {
   id: "section-uid-47",
-  title: "NexaMart · NxMart",
-  paragraphs: ["Online shopping across Bangladesh. Browse available products on NexaMart."],
+  title: "Docnova · NxMart",
+  paragraphs: ["Online shopping across Bangladesh. Browse available products on Docnova."],
   imageUrl: "/Logo.png",
-  imageAlt: "NexaMart logo",
+  imageAlt: "Docnova logo",
   backgroundColor: "#f6f7f9",
   headingColor: "#252d8f",
   textColor: "#202641",

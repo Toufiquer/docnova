@@ -42,7 +42,7 @@ export const defaultDataSection44: Section44Data = {
   introduction: "Review the information shown with each product before placing an order.",
   requirements: [],
   imageUrl: "/Logo.png",
-  imageAlt: "NexaMart logo",
+  imageAlt: "Docnova logo",
   backgroundColor: "#f8f9fb",
   headingColor: "#24349a",
   textColor: "#202641",

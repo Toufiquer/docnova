@@ -1,8 +1,8 @@
 =================================================================================================================================================
 ## Section 1. Company Information
-- Company name: NexaMart
+- Company name: Docnova
 - Short name: NxMart
-- Business description: NexaMart is an online shopping platform in Bangladesh.
+- Business description: Docnova is an online shopping platform in Bangladesh.
 - Products/Services: Online shopping
 - Service area: Across Bangladesh
 - Mobile: 01711111111

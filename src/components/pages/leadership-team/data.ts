@@ -55,10 +55,10 @@ export const defaultLayout = {
 
 export const defaultDataLeadershipTeam: ILeadershipTeamData = {
   pageUid: "leadership-team-uid",
-  pageName: "NexaMart Team",
-  eyebrow: "NexaMart · NxMart",
-  title: "NexaMart",
-  description: "NexaMart is an online shopping platform serving customers across Bangladesh.",
+  pageName: "Docnova Team",
+  eyebrow: "Docnova · NxMart",
+  title: "Docnova",
+  description: "Docnova is an online shopping platform serving customers across Bangladesh.",
   founderLabel: "Founder",
   ceo: { id: "ceo", name: "", title: "", bio: "", image: "" },
   rows: [],

@@ -24,10 +24,10 @@ export const defaultLayout = {
 
 export const defaultDataAboutTheCountry: IAboutTheCountryData = {
   pageUid: "about-the-country-uid",
-  pageName: "NexaMart",
-  eyebrow: "NexaMart · NxMart",
+  pageName: "Docnova",
+  eyebrow: "Docnova · NxMart",
   title: "Online shopping across Bangladesh",
-  subtitle: "Browse available products on NexaMart.",
+  subtitle: "Browse available products on Docnova.",
   primaryAction: "Browse products",
   secondaryAction: "Contact us",
   sections: [],

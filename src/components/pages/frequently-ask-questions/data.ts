@@ -10,6 +10,6 @@ export const defaultQuestions = [];
 
 export const defaultData = {
   title: "Frequently Asked Questions",
-  intro: "Contact NexaMart with questions about online shopping.",
+  intro: "Contact Docnova with questions about online shopping.",
   questionsJson: JSON.stringify([]),
 };

@@ -43,7 +43,7 @@ export const defaultDataCookiePolicy: ICookiePolicyData = {
   title: "Cookie Policy",
   lastUpdatedLabel: "",
   sections: [],
-  contactTitle: "Contact NexaMart",
+  contactTitle: "Contact Docnova",
   contactDescription: "For questions, contact us by phone, WhatsApp, or email.",
   supportEmail: "example@gmail.com",
 };

@@ -39,13 +39,13 @@ export interface Section40Props {
 
 export const defaultDataSection40: Section40Data = {
   id: "section-uid-40",
-  eyebrow: "NexaMart · NxMart",
+  eyebrow: "Docnova · NxMart",
   showEyebrow: true,
   title: "Get Your",
-  highlightedTitle: "Contact NexaMart",
+  highlightedTitle: "Contact Docnova",
   paragraphs: [
-    "NexaMart is an online shopping platform serving customers across Bangladesh.",
-    "For questions, contact NexaMart by phone, WhatsApp, or email.",
+    "Docnova is an online shopping platform serving customers across Bangladesh.",
+    "For questions, contact Docnova by phone, WhatsApp, or email.",
     "Browse available products online.",
   ],
   primaryButtonText: "Browse products",
