@@ -15,32 +15,25 @@ import ImagePickerModal from "@/components/dashboard-ui/ImagePickerModal";
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
-import { defaultCards, defaultData, defaultHomeCard, type HomeCard, type HomeData } from "./data";
-
-function parseCards(value: string | undefined): HomeCard[] {
-  try {
-    const parsed: unknown = JSON.parse(value ?? defaultData.sectionsJson);
-    return Array.isArray(parsed) && parsed.length
-      ? parsed.map((item) => ({
-          title: typeof item?.title === "string" ? item.title : "",
-          description: typeof item?.description === "string" ? item.description : "",
-        }))
-      : defaultCards;
-  } catch {
-    return defaultCards;
-  }
-}
+import { defaultData, defaultHomeCard, parseHomeCards, type HomeCard, type HomeData } from "./data";
 
 export default function Mutation({ data, onChange }: { data?: Partial<HomeData>; onChange: (data: HomeData) => void }) {
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
   const [expandedCard, setExpandedCard] = useState<number | null>(0);
   const [mediaOpen, setMediaOpen] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const values = { ...defaultData, ...data };
-  const sections = parseCards(values.sectionsJson);
+  const sections = parseHomeCards(values.sectionsJson);
+  const totalPages = Math.max(1, Math.ceil(sections.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const visibleSections = sections.slice((currentPage - 1) * pageSize, currentPage * pageSize);
   const update = (next: Partial<HomeData>) => onChange({ ...values, ...next });
   const updateCard = (index: number, card: HomeCard) => {
     const next = sections.map((item, itemIndex) => (itemIndex === index ? card : item));
@@ -49,6 +42,7 @@ export default function Mutation({ data, onChange }: { data?: Partial<HomeData>;
   const addCard = () => {
     update({ sectionsJson: JSON.stringify([...sections, { ...defaultHomeCard }]) });
     setExpandedCard(sections.length);
+    setPage(Math.floor(sections.length / pageSize) + 1);
   };
   const deleteCard = () => {
     if (deleteIndex === null) return;
@@ -64,7 +58,9 @@ export default function Mutation({ data, onChange }: { data?: Partial<HomeData>;
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-[.16em] text-amber-700">Page editor</p>
             <h2 className="mt-1 text-xl font-semibold text-stone-950">Home page content</h2>
-            <p className="mt-1 text-sm text-stone-500">Update the hero, image, and page sections in one place.</p>
+            <p className="mt-1 text-sm text-stone-500">
+              Update the hero, image, and the eleven homepage content slots.
+            </p>
           </div>
           <div className="flex items-center gap-3 rounded-sm border border-[#eadfca] bg-[#fffaf0] px-3 py-2">
             <div className="min-w-0">
@@ -110,13 +106,20 @@ export default function Mutation({ data, onChange }: { data?: Partial<HomeData>;
 
           <section className="rounded-sm border border-[#eadfca] bg-white p-4">
             <SectionTitle description="Choose an image from Media Library." title="Hero image" />
-            <Image
-              alt={values.imageAlt || defaultData.imageAlt}
-              className="mt-4 aspect-[16/10] w-full rounded-sm border border-[#eadfca] bg-[#fffaf0] object-cover"
-              height={380}
-              src={values.imageUrl || defaultData.imageUrl}
-              width={608}
-            />
+            {values.imageUrl ? (
+              <Image
+                alt={values.imageAlt || defaultData.imageAlt}
+                className="mt-4 aspect-[16/10] w-full rounded-sm border border-[#eadfca] bg-[#fffaf0] object-cover"
+                height={380}
+                src={values.imageUrl}
+                unoptimized
+                width={608}
+              />
+            ) : (
+              <div className="mt-4 grid aspect-[16/10] place-items-center rounded-sm border border-[#eadfca] bg-[#effaff] text-sm text-slate-500">
+                No image selected
+              </div>
+            )}
             <Button
               className="mt-3 w-full cursor-pointer bg-amber-100 text-amber-900 transition duration-700 hover:bg-amber-200"
               onClick={() => setMediaOpen(true)}
@@ -136,22 +139,34 @@ export default function Mutation({ data, onChange }: { data?: Partial<HomeData>;
         <section className="mt-4 rounded-sm border border-[#eadfca] bg-white p-4 sm:p-5">
           <div className="flex flex-col gap-3 border-b border-[#eadfca] pb-4 sm:flex-row sm:items-center sm:justify-between">
             <SectionTitle
-              description={`${sections.length} section${sections.length === 1 ? "" : "s"} shown on the page.`}
+              description={`${sections.length} content entries. The first 11 appear after the hero; missing entries use defaults.`}
               title="Page sections"
             />
-            <Button
-              className="cursor-pointer bg-amber-100 text-amber-900 transition duration-700 hover:bg-amber-200"
-              onClick={addCard}
-              size="sm"
-              type="button"
-              variant="secondary"
-            >
-              Add section
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                className="cursor-pointer bg-amber-100 text-amber-900 transition duration-700 hover:bg-amber-200"
+                onClick={() => setResetOpen(true)}
+                size="sm"
+                type="button"
+                variant="secondary"
+              >
+                Restore defaults
+              </Button>
+              <Button
+                className="cursor-pointer bg-amber-100 text-amber-900 transition duration-700 hover:bg-amber-200"
+                onClick={addCard}
+                size="sm"
+                type="button"
+                variant="secondary"
+              >
+                Add section
+              </Button>
+            </div>
           </div>
 
           <div className="mt-4 grid gap-3">
-            {sections.map((card, index) => {
+            {visibleSections.map((card, visibleIndex) => {
+              const index = (currentPage - 1) * pageSize + visibleIndex;
               const isOpen = expandedCard === index;
               return (
                 <article className="overflow-hidden rounded-sm border border-[#eadfca] bg-[#fffdf8]" key={index}>
@@ -161,6 +176,8 @@ export default function Mutation({ data, onChange }: { data?: Partial<HomeData>;
                     </span>
                     <button
                       className="min-w-0 flex-1 cursor-pointer text-left"
+                      aria-expanded={isOpen}
+                      title={`${card.title} — ${card.description}`}
                       onClick={() => setExpandedCard(isOpen ? null : index)}
                       type="button"
                     >
@@ -213,6 +230,59 @@ export default function Mutation({ data, onChange }: { data?: Partial<HomeData>;
               );
             })}
           </div>
+          {sections.length > 10 && (
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#eadfca] pt-4">
+              <div className="flex items-center gap-2 text-sm text-stone-600">
+                <span>Sections per page</span>
+                <Select
+                  value={String(pageSize)}
+                  onValueChange={(value) => {
+                    setPageSize(Number(value));
+                    setPage(1);
+                  }}
+                >
+                  <SelectTrigger
+                    aria-label="Sections per page"
+                    className="w-20 rounded-sm border border-[#eadfca] bg-white px-2 py-1"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="border border-[#eadfca] bg-white">
+                    {[10, 25, 50, 100].map((size) => (
+                      <SelectItem key={size} value={String(size)}>
+                        {size}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-stone-600">
+                <Button
+                  className="cursor-pointer bg-amber-100 text-amber-900 transition duration-700 hover:bg-amber-200"
+                  disabled={currentPage <= 1}
+                  onClick={() => setPage(currentPage - 1)}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                >
+                  Previous
+                </Button>
+                <span>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  className="cursor-pointer bg-amber-100 text-amber-900 transition duration-700 hover:bg-amber-200"
+                  disabled={currentPage >= totalPages}
+                  onClick={() => setPage(currentPage + 1)}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
         </section>
       </div>
 
@@ -220,6 +290,7 @@ export default function Mutation({ data, onChange }: { data?: Partial<HomeData>;
         <ImagePickerModal
           close={() => setMediaOpen(false)}
           description="Select an image from Media Library or upload a new home image."
+          selectedUrl={values.imageUrl}
           onSelect={(imageUrl) => {
             update({ imageUrl });
             setMediaOpen(false);
@@ -228,6 +299,19 @@ export default function Mutation({ data, onChange }: { data?: Partial<HomeData>;
           uploadLabel="Upload home image"
         />
       )}
+      <AlertDialog
+        confirmLabel="Restore defaults"
+        description="This replaces the current home content in the editor with the Docnova defaults. Save the page to apply the change."
+        onCancel={() => setResetOpen(false)}
+        onConfirm={() => {
+          onChange({ ...defaultData });
+          setExpandedCard(0);
+          setPage(1);
+          setResetOpen(false);
+        }}
+        open={resetOpen}
+        title="Restore home defaults?"
+      />
       <AlertDialog
         confirmLabel="Delete section"
         description={deleteIndex === null ? "" : `Section ${deleteIndex + 1} will be removed from this home page.`}
@@ -279,14 +363,14 @@ function PaddingControl({
         aria-label={label}
         className="mt-3 accent-amber-600"
         max={300}
-        min={-300}
-        onValueChange={([next]) => onValueChange(Math.min(300, Math.max(-300, next ?? 0)))}
+        min={0}
+        onValueChange={([next]) => onValueChange(Math.min(300, Math.max(0, next ?? 0)))}
         step={1}
         value={[value]}
       />
       <div className="mt-2 flex justify-between text-[11px] text-stone-500">
-        <span>-300</span>
         <span>0</span>
+        <span>150</span>
         <span>300</span>
       </div>
     </div>

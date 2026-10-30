@@ -80,6 +80,8 @@ export default function RootLayout({
           <ConfirmDeleteProvider>
             <div className="print:hidden">
               <TopBanner />
+            </div>
+            <div className="contents print:hidden">
               <Menu />
             </div>
             <PublicMobileNavigationSpacing>
